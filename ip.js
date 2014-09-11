@@ -81,4 +81,45 @@ function solve(constraintTable, changedConstraints) {
     //  derivatives of each x_sub_i with respect to that i) Q and the gradient
     //  matrix (i think, as it's not actually explicitly labeled as such) g. 
     //  maybe those play a factor in the minimization algorithm. 
+    //
+    // A: okay, looked this up. the procedure is called "Newton's Method," and
+    // the pseudocode for it looks like:
+    //
+    // x0 = 1                      %The initial value
+    
+    // f = @(x) x^2 - 2            %The function whose root we are trying to find
+    // fprime = @(x) 2*x           %The derivative of f(x)
+    // tolerance = 10^(-7)         %7 digit accuracy is desired
+    // epsilon = 10^(-14)          %Don't want to divide by a number smaller than this
+     
+    // maxIterations = 20          %Don't allow the iterations to continue indefinitely
+    // haveWeFoundSolution = false %Were we able to find the solution to the desired tolerance? not yet.
+     
+    // for i = 1 : maxIterations 
+     
+    //     y = f(x0)
+    //     yprime = fprime(x0)
+     
+    //     if(abs(yprime) < epsilon)                         %Don't want to divide by too small of a number
+    //         fprintf('WARNING: denominator is too small\n')
+    //         break;                                        %Leave the loop
+    //     end
+     
+    //     x1 = x0 - y/yprime                                %Do Newton's computation
+     
+    //     if(abs(x1 - x0)/abs(x1) < tolerance)              %If the result is within the desired tolerance
+    //         haveWeFoundSolution = true
+    //         break;                                        %Done, so leave the loop
+    //     end
+     
+    //     x0 = x1                                           %Update x0 to start the process again                  
+     
+    // end
+     
+    // if (haveWeFoundSolution) % We found a solution within tolerance and maximum number of iterations
+    //     fprintf('The root is: %f\n', x1);
+    // else %If we weren't able to find a solution to within the desired tolerance
+    //     fprintf('Warning: Not able to find solution to within the desired tolerance of %f\n', tolerance);
+    //     fprintf('The last computed approximate root was %f\n', x1)
+    // end
 }
