@@ -10,13 +10,28 @@ t = 1.1;
 // central path. set to some initial value > 1
 convergence_speed = 1.1;
 // this is the stopping parameter epsilon; set to some value 0 < x < 1
-e = 1.1;
-function ip(constraint_matrix) {
-    var xs = newtons_method(constraint_matrix); // TODO: initialize xs somehow? 
-    var m = constraint_matrix.length; // the dimension of the matrix
+e = 0.01;
+
+// We'll need a method for translating from the user input to a constraint
+// matrix
+function ip(constraint_matrix, inequality_matrix) {
+    var dimension = constraint_matrix.length;
+
+    var objective_fn = function(xs) {
+        return matrix_addition(
+                scalar_multiply(t, 
+                    matrix_multiply(transpose(constraint_matrix)), xs), 
+                barrier(xs);
+    }
+
+    var objective_fn_prime = function(xs) {
+        // TODO: double check this derivative
+        matrix_addition(scalar_multiply(t, transpose(constraint_matrix)),
+            barrier_prime(xs);
+    }
     
-    while (m / t > e) {
-        xs = newtons_method(xs, constraint_matrix);
+    while (dimension / t > e) {
+        xs = newtons_method(xs, constraint_matrix, objective_fn, objective_fn_prime);
         t *= convergence_speed;
     }
 
@@ -29,41 +44,16 @@ function ip(constraint_matrix) {
 // In this particular implementation of Newton's method, I've hardcoded the 
 // objective function and its derivative ahead of time to avoid doing 
 // differentiation on each iteration. 
-function newtons_method(xs, constraint_matrix) {
+function newtons_method(xs, constraint_matrix, 
+                        objective_fn, objective_fn_prime) {
     // xs: The initial value
-    var ct = transpose(constraint_matrix);
-    var barrier = function (x, bound) {
-        return -(Math.log(bound - x));
-    }
-    var objective = function (xs) {
-        var n = xs.length;
-        for (var i = 0; i < n; i++) { 
-            for (var j = 0; j < n; j++) {
-                var x = ct[i][j];
-                // FIXME: this bounds lookup is wrong 
-                t * x + barrier(x, bounds[i]); // elementwise objective fn; conceptually we're just doing a map
-            }
-        }
-    }
     tolerance = 10^(-7);         // 7 digit accuracy is desired
     epsilon = 10^(-14); // Don't want to divide by a number smaller than this
     max_iterations = 20; // Don't allow the iterations to continue indefinitely
     found_solution = false; // Were we able to find the solution to the desired tolerance? not yet.
-
-    o_prime = function(xs) {
-        var n = xs.length;
-        for (var i = 0; i < n; i++) {
-            for (var j = 0; j < n; j++) {
-                var x = ct[i][j];
-                // derivative of elementwise objective fn
-                // TODO: check division by zero
-                t + (1 / (bounds[i][j] - a));  
-            }
-        }
-    }
     for (var i = 1; i < max_iterations; i++) {
-        ys = objective(xs);
-        ysprime = o_prime(xs);
+        ys = objective_fn(xs);
+        ysprime = objective_fn_prime(xs);
      
         if(abs(yprime) < epsilon) {
             // Don't want to divide by too small of a number
@@ -72,7 +62,10 @@ function newtons_method(xs, constraint_matrix) {
         } 
         xsprime = xs - ys/ysprime; // Do Newton's computation
      
-        if(abs(x1 - x0)/abs(x1) < tolerance) { // If the result is within the desired tolerance
+        if(scalar_multiply(
+                    (1 / average(abs(xs))),
+                    average(abs(matrix_addition(xs, scalar_multiply(-1, xsprime))))) 
+                < tolerance) { // If the result is within the desired tolerance
             found_solution = true
             break; // Done, so leave the loop
         }
