@@ -65,7 +65,7 @@ function newtons_method(xs, constraint_matrix,
         ys = objective_fn(xs);
         ysprime = objective_fn_prime(xs);
 
-        if(abs(yprime) < epsilon) {
+        if(m.abs(ysprime) < epsilon) {
             // Don't want to divide by too small of a number
             console.log('WARNING: denominator is too small\n');
             break; // Leave the loop
@@ -73,8 +73,8 @@ function newtons_method(xs, constraint_matrix,
         xsprime = xs - ys/ysprime; // Do Newton's computation
 
         if(m.scalar_multiply(
-                    (1 / average(abs(xs))),
-                    average(abs(m.matrix_addition(xs, m.scalar_multiply(-1, xsprime)))))
+                    (1 / m.average(m.abs(xs))),
+                    m.average(m.abs(m.matrix_addition(xs, m.scalar_multiply(-1, xsprime)))))
                 < tolerance) { // If the result is within the desired tolerance
             found_solution = true
             break; // Done, so leave the loop
