@@ -14,33 +14,39 @@ var m = require('./matrix-math.js');
 // http://www2.isye.gatech.edu/~nemirovs/Published.pdf
 
 // t is the initial value of the barrier parameter; set to some initial value > 1
-t = 1.1;
+var t = 1.1;
 // the convergence speed governs how quickly we force the function along the
 // central path. set to some initial value > 1
 convergence_speed = 1.1;
 // this is the stopping parameter epsilon; set to some value 0 < x < 1
-e = 0.01;
+var e = 0.01;
 
-var barrier = function (xs) {}
-var barrier_prime = function (xs) {}
+var barrier = function (xs) {
+  return xs;
+}
+var barrier_prime = function (xs) {return xs;}
 
 
 // We'll need a method for translating from the user input to a constraint
 // matrix
 function ip(constraint_matrix, rhs, objective_fn, dimension) {
     var dimension = constraint_matrix.length;
-    var xs;
+    constraint_matrix = m.create(constraint_matrix);
+    var xs = m.vector([0]); // TODO: initialize xs sensibly
     var objective_fn = function(xs) {
-        return m.matrix_addition(
+        var transpose = m.transpose(constraint_matrix);
+        return // m.matrix_addition(
                 m.scalar_multiply(t,
-                    m.matrix_multiply(m.transpose(constraint_matrix)), xs),
-                barrier(xs));
+                    m.matrix_multiply(transpose))//, xs),
+                // barrier(xs));
     }
 
     var objective_fn_prime = function(xs) {
         // TODO: double check this derivative
-        m.matrix_addition(m.scalar_multiply(t, m.transpose(constraint_matrix)),
-            barrier_prime(xs));
+      console.log(xs);
+      console.log(t);
+        return m.scalar_multiply(t, xs); //,
+            // barrier_prime(xs));
     }
 
     while (dimension / t > e) {
@@ -70,7 +76,8 @@ function newtons_method(xs, constraint_matrix,
             console.log('WARNING: denominator is too small\n');
             break; // Leave the loop
         }
-        xsprime = xs - ys/ysprime; // Do Newton's computation
+        xsprime = m.subtract(xs, m.matrix_multiply(m.inverse(ysprime), ys)); // Do Newton's computation
+        // newton's for a function cTx is the inverse jacobian times cT
 
         if(m.scalar_multiply(
                     (1 / m.average(m.abs(xs))),
