@@ -26,15 +26,7 @@ module.exports.inverse = function (a) {
 }
 module.exports.average = function (matrix) {
   var len = matrix.elements.length;
-  var sum = 0;
-  var rows = matrix.rows();
-  var cols = matrix.cols();
-  var count = rows * cols;
-  for (var i = 0; i < rows; i++) {
-    for (var j = 0; j < cols; j++) {
-      sum += matrix.e(i, j);
-    }
-  }
+  var sum = matrix.sum();
   return (sum / count);
 }
 module.exports.abs = function (matrix) { return matrix.map(Math.abs) }

@@ -13,41 +13,11 @@ var m = require('./matrix-math.js');
 // a much better description of the interior point method:
 // http://www2.isye.gatech.edu/~nemirovs/Published.pdf
 
-// t is the initial value of the barrier parameter; set to some initial value > 1
-var t = 1.1;
-// the convergence speed governs how quickly we force the function along the
-// central path. set to some initial value > 1
-convergence_speed = 1.1;
-// this is the stopping parameter epsilon; set to some value 0 < x < 1
-var e = 0.01;
-
-var barrier = function (xs) {
-  return xs;
-}
-var barrier_prime = function (xs) {return xs;}
-
-
-// We'll need a method for translating from the user input to a constraint
-// matrix
 function ip(constraint_matrix, rhs, objective_fn, dimension) {
     var dimension = constraint_matrix.length;
     constraint_matrix = m.create(constraint_matrix);
     var xs = m.vector([0]); // TODO: initialize xs sensibly
-    var objective_fn = function(xs) {
-        var transpose = m.transpose(constraint_matrix);
-        return // m.matrix_addition(
-                m.scalar_multiply(t,
-                    m.matrix_multiply(transpose))//, xs),
-                // barrier(xs));
-    }
-
-    var objective_fn_prime = function(xs) {
-        // TODO: double check this derivative
-      console.log(xs);
-      console.log(t);
-        return m.scalar_multiply(t, xs); //,
-            // barrier_prime(xs));
-    }
+    var objective_fn, objective_fn_prime;
 
     while (dimension / t > e) {
         xs = newtons_method(xs, constraint_matrix, objective_fn, objective_fn_prime);
