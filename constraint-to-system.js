@@ -1,3 +1,4 @@
+var _ = require('underscore');
 // translate constraints into a linear_constraints of equations
 // method:
 // given equality constraints with a symbol on the lhs and rhs,
@@ -86,3 +87,5 @@ function constraint_to_vector_eqn(constraint) {
   // condense all constants on the right hand side into one value
   linear_constraints.b = [_.reduce(new_rhs, function (acc, constant) { return acc + constant.constant * constant.coeff }, 0)];
 }
+
+module.exports.load_constraints = constraint_to_vector_eqn;

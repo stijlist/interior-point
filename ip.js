@@ -1,11 +1,4 @@
 var m = require('./matrix-math.js');
-// linear problem schema
-// var simplestLP = {
-//  coefficients: [1],
-//  rhs: [10],
-//  objective_fn: function(x) { return x; },
-//  dimension: 1
-//}
 
 // the paper: ["constraint solvers for user interface
 // layout"](http://arxiv.org/pdf/1401.1031v1.pdf)
@@ -74,7 +67,8 @@ function newtons_method(xs, constraint_matrix,
 // API for our solver
 // solves the linear equation of the form Ax <= b
 // returns a vector of floats representing the solution
-module.exports.solve = function solve(linear_problem) {
-  return ip(linear_problem.coefficients, linear_problem.rhs,
-            linear_problem.objective_fn, linear_problem.dimension);
+module.exports = function solve(linear_problem) {
+    return [0, 0];
+  // return ip(linear_problem.coefficients, linear_problem.rhs,
+  //           linear_problem.objective_fn, linear_problem.dimension);
 }
