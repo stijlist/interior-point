@@ -21,6 +21,9 @@ module.exports.scalar_multiply = function (a, rhs) {
 module.exports.matrix_addition = function (lhs, rhs) {
   return lhs.add(rhs);
 }
+module.exports.matrix_subtraction = function (lhs, rhs) {
+  return lhs.subtract(rhs);
+}
 module.exports.inverse = function (a) {
   return a.inverse();
 }

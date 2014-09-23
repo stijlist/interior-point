@@ -11,20 +11,25 @@
 
     test("sanity check", true);
 
-    var solve = require('ip.js');
+    var solve = require('./ip.js');
 
-    var c1 = {
+    var linear_problem = {
+        dimension: 2,
         vars: ['box1.left', 'window.left'],
-        coefficients: [1, -1],
-        rhs: [0]
-    };
-    var c2 = {
-        vars: ['box1.left', 'window.left'],
-        coefficients: [1, 0],
-        rhs: [0]
+        eq_constraints: {
+            coefficients: [[1, -1],
+                           [1,  0]],
+            weights: [1, 1],
+            rhs: [0, 0]
+        },
+        ineq_constraints: {
+            coefficients: [[1, 1],
+                           [1, 0]],
+            rhs: [5, 3]
+        }
     }
 
-    test("simple linear problem", solve([c1, c2]));
+    test("simple linear problem", solve(linear_problem));
     
-    console.log(testsPassed + " tests passed");
+    console.log(testsPassed + " test(s) passed");
 })();
