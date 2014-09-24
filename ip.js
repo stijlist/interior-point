@@ -48,7 +48,7 @@ function objective_jacobian(xs, weights, eq_matrix, eq_rhs,
     var num_cols = eq_matrix.cols();
     var second_term_row_summation_acc = m.create(zeros(num_cols));
 
-    for (var i = 0; i < num_rows; i++) {
+    for (var i = 1; i <= num_rows; i++) {
         second_term_row_summation_denominator = ineq_matrix.row(i).multiply(xs)
         second_term_row_summation_acc = 
             second_term_row_summation_acc.add(
@@ -65,8 +65,7 @@ function objective_hessian(xs, ineq_matrix, ineq_rhs, mu) {
     var num_rows = ineq_matrix.rows();
     var summation_over_rows = 0;
 
-    for (var i = 0; i < num_rows; i++) {
-        console.log(ineq_matrix.row(i));
+    for (var i = 1; i <= num_rows; i++) {
         // TODO: naming
         var numerator = 
             ineq_matrix.row(i).transpose().multiply(ineq_matrix.row(i));
@@ -82,9 +81,8 @@ function interior_newtons(mu, xs, weights,
 
     
     var xs_delta = objective_hessian(xs, ineq_matrix, ineq_rhs, mu);
-// (xs, ineq_matrix, ineq_rhs, mu) {
         
-    return m.subtract(xs, xs_delta);
+    return m.matrix_subtraction(xs, xs_delta);
 }
 
 var solve = function (linear_problem) {
