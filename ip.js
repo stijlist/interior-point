@@ -30,7 +30,9 @@ function ip(linear_problem) {
     var ineq_rhs = linear_problem.ineq_constraints.rhs;
     
     // TODO: look at inequality constraints to do this initialization
-    var xs = m.vector(zeros(5));
+    // how should we go about this? I'm thinking "pick a value between zero and 
+    // any constraint" or "pick a random value" for unconstrained items
+    var xs = m.vector(zeros(dimension));
 
     while (dimension / t > e) {
         xs = interior_newtons(mu, xs, weights,
@@ -39,7 +41,7 @@ function ip(linear_problem) {
         t *= convergence_speed;
     }
 
-    return xs;
+    return xs.elements;
 }
 
 // the hessian of the objective function results in a vector
@@ -80,7 +82,12 @@ function interior_newtons(mu, xs, weights,
                           ineq_matrix, ineq_rhs) {
 
     
-    var xs_delta = objective_hessian(xs, ineq_matrix, ineq_rhs, mu);
+    // TODO: stopping conditions
+    // xs_delta is xs - hessian(xs) * gradient(xs)
+    var xs_delta = 
+        xs - objective_hessian(xs, ineq_matrix, ineq_rhs, mu)
+             .multiply(objective_jacobian(xs, weights, eq_matrix, eq_rhs, 
+                                          ineq_matrix, ineq_rhs, mu));
         
     return m.matrix_subtraction(xs, xs_delta);
 }
